@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(supabase --version)",
+      "Bash(scoop --version)",
+      "Bash(winget --version)",
+      "Bash(winget install *)",
+      "Bash(npm install *)",
+      "Bash(npx create-next-app@latest . --typescript --eslint --tailwind --src-dir --app --import-alias \"@/*\" --yes)"
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+export const TARGET_DURATION_MIN_SECONDS = 60
+export const TARGET_DURATION_MAX_SECONDS = 43200
+export const REVIEW_THRESHOLD_SECONDS    = 21600  // 6時間
+export const MAX_ACTUAL_DURATION_SECONDS = 43200  // 12時間
+
+export const DURATION_PRESETS_MINUTES = [25, 30, 45, 60, 90, 120] as const

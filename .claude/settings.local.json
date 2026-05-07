@@ -20,7 +20,13 @@
       "Bash(npx tsc *)",
       "Bash(npx shadcn@latest add dropdown-menu --yes)",
       "Bash(npx vitest *)",
-      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(Object.keys\\(p.dependencies\\)\\)\\)\")"
+      "Bash(node -e \"const p=require\\('./package.json'\\); console.log\\(JSON.stringify\\(Object.keys\\(p.dependencies\\)\\)\\)\")",
+      "Bash(Get-ChildItem -Path \"C:\\\\develop\\\\focus-core\" -Directory)",
+      "Bash(Select-Object -First 20)",
+      "Bash(Get-ChildItem -Path \"C:\\\\develop\\\\focus-core\" -Force)",
+      "Bash(Select-Object Name)",
+      "Bash(cat)",
+      "Read(//tmp/**)"
     ]
   }
 }

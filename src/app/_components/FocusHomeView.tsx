@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { BottomNavigation, type BottomTab } from '@/components/layout/BottomNavigation'
@@ -15,6 +16,7 @@ type Props = {
 }
 
 export function FocusHomeView({ displayName }: Props) {
+  const router = useRouter()
   const [selectedTask, setSelectedTask] = useState<FocusTaskDto | null>(null)
   const [activeTab, setActiveTab] = useState<BottomTab>('timer')
 
@@ -49,7 +51,13 @@ export function FocusHomeView({ displayName }: Props) {
         rightStats={statsPanel}
         mobileContent={mobileContent}
       />
-      <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      <BottomNavigation
+        activeTab={activeTab}
+        onTabChange={(tab) => {
+          if (tab === 'stats') { router.push('/records'); return }
+          setActiveTab(tab)
+        }}
+      />
     </>
   )
 }

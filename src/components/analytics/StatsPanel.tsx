@@ -3,7 +3,8 @@
 // HIG: Deference — パネルは補助。コンテンツが前に出る
 
 import { useState } from 'react'
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
+import Link from 'next/link'
+import { ChevronLeftIcon, ChevronRightIcon, Maximize2Icon } from 'lucide-react'
 import { format, addDays, addWeeks, subWeeks, addMonths, subMonths } from 'date-fns'
 import { ja } from 'date-fns/locale'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
@@ -13,6 +14,7 @@ import { WeeklyStats } from './WeeklyStats'
 import { MonthlyStats } from './MonthlyStats'
 import { YearlyStats } from './YearlyStats'
 import { YearHeatmap } from './YearHeatmap'
+import { ROUTES } from '@/lib/constants/routes'
 import { TagBreakdown } from './TagBreakdown'
 
 function getMonday(date: Date): Date {
@@ -35,6 +37,16 @@ export function StatsPanel() {
 
   return (
     <div className="flex flex-col gap-4 p-4">
+      <div className="flex items-center justify-end">
+        <Link
+          href={ROUTES.RECORDS}
+          className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          aria-label="記録を大きく見る"
+        >
+          <Maximize2Icon className="w-3.5 h-3.5" />
+          大きく見る
+        </Link>
+      </div>
       <Tabs defaultValue="daily">
         <TabsList className="w-full">
           <TabsTrigger value="daily" className="flex-1">日</TabsTrigger>

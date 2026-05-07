@@ -5,10 +5,12 @@ import { useRouter } from 'next/navigation'
 import { AppHeader } from '@/components/layout/AppHeader'
 import { MainLayout } from '@/components/layout/MainLayout'
 import { BottomNavigation, type BottomTab } from '@/components/layout/BottomNavigation'
+import { HelpButton } from '@/components/layout/HelpButton'
 import { TimerPanel } from '@/components/focus/TimerPanel'
 import { TaskPanel } from '@/components/tasks/TaskPanel'
 import { StatsPanel } from '@/components/analytics/StatsPanel'
 import { useActiveSession } from '@/hooks/useActiveSession'
+import { useTutorial } from '@/hooks/useTutorial'
 import type { FocusTaskDto } from '@/hooks/useFocusTasks'
 
 type Props = {
@@ -17,6 +19,7 @@ type Props = {
 
 export function FocusHomeView({ displayName }: Props) {
   const router = useRouter()
+  const { startTutorial } = useTutorial()
   const [selectedTask, setSelectedTask] = useState<FocusTaskDto | null>(null)
   const [activeTab, setActiveTab] = useState<BottomTab>('timer')
 
@@ -58,6 +61,7 @@ export function FocusHomeView({ displayName }: Props) {
           setActiveTab(tab)
         }}
       />
+      <HelpButton onStart={startTutorial} />
     </>
   )
 }

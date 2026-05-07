@@ -26,7 +26,7 @@ export function MainLayout({ header, left, right, rightStats, mobileContent }: P
         </main>
 
         {/* Right column — stats (desktop only) */}
-        <aside className="hidden md:flex w-80 shrink-0 flex-col overflow-y-auto">
+        <aside data-tutorial="stats-panel" className="hidden md:flex w-80 shrink-0 flex-col overflow-y-auto">
           {rightStats}
         </aside>
 

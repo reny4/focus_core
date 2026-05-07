@@ -39,20 +39,23 @@ export function SessionControls({
 
   if (phase === 'idle') {
     return (
-      <Button
-        className="h-11 w-full rounded-lg text-base font-semibold"
-        onClick={onStart}
-        disabled={!selectedFocusTaskId || isStarting}
-        aria-label="集中セッションを開始する"
-      >
-        {isStarting ? '開始中...' : '集中を開始する'}
-      </Button>
+      <div data-tutorial="session-controls">
+        <Button
+          data-tutorial="start-button"
+          className="h-11 w-full rounded-lg text-base font-semibold"
+          onClick={onStart}
+          disabled={!selectedFocusTaskId || isStarting}
+          aria-label="集中セッションを開始する"
+        >
+          {isStarting ? '開始中...' : '集中を開始する'}
+        </Button>
+      </div>
     )
   }
 
   return (
     <>
-      <div className="flex flex-col gap-3">
+      <div data-tutorial="session-controls" className="flex flex-col gap-3">
         <Button
           className="h-11 w-full rounded-lg text-base font-semibold"
           onClick={onFinish}

@@ -26,7 +26,9 @@
       "Bash(Get-ChildItem -Path \"C:\\\\develop\\\\focus-core\" -Force)",
       "Bash(Select-Object Name)",
       "Bash(cat)",
-      "Read(//tmp/**)"
+      "Read(//tmp/**)",
+      "Bash(npm list *)",
+      "Bash(npx shadcn@latest add tooltip --yes)"
     ]
   }
 }

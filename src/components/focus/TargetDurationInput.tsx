@@ -37,7 +37,7 @@ export function TargetDurationInput({ value, onChange, disabled }: Props) {
   }
 
   return (
-    <div className="space-y-3">
+    <div data-tutorial="duration-input" className="space-y-3">
       <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
         目標時間
       </p>

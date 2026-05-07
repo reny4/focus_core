@@ -71,7 +71,7 @@ export function TaskPanel({ selectedTaskId, isActiveSession, onSelectTask }: Pro
   return (
     <div className="flex flex-col h-full">
       {/* Panel header */}
-      <div className="flex items-center justify-between px-4 h-11 border-b shrink-0">
+      <div data-tutorial="tag-section" className="flex items-center justify-between px-4 h-11 border-b shrink-0">
         <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
           タスク
         </span>
@@ -86,6 +86,7 @@ export function TaskPanel({ selectedTaskId, isActiveSession, onSelectTask }: Pro
             <TagsIcon className="w-4 h-4" />
           </Button>
           <Button
+            data-tutorial="add-task-button"
             variant="ghost"
             size="icon-sm"
             onClick={openCreateDialog}
@@ -98,7 +99,7 @@ export function TaskPanel({ selectedTaskId, isActiveSession, onSelectTask }: Pro
       </div>
 
       {/* Task list */}
-      <div className="flex-1 overflow-y-auto">
+      <div data-tutorial="task-list" className="flex-1 overflow-y-auto">
         <FocusTaskList
           tasks={tasks}
           isLoading={isLoading}

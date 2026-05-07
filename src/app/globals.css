@@ -154,3 +154,70 @@
     animation-duration: 0ms !important;
   }
 }
+
+/* ────────────────────────────────────────────────────────────
+   driver.js — Focus Core テーマへの上書き
+   HIG: Deference — ポップオーバーはコンテンツの補助に留まる
+   ──────────────────────────────────────────────────────────── */
+.driver-popover {
+  background-color: var(--background) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgb(0 0 0 / 0.12) !important;
+  padding: 20px !important;
+  max-width: 300px !important;
+}
+
+.driver-popover-title {
+  color: var(--foreground) !important;
+  font-size: 0.9375rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 8px !important;
+}
+
+.driver-popover-description {
+  color: var(--muted-foreground) !important;
+  font-size: 0.8125rem !important;
+  line-height: 1.6 !important;
+  white-space: pre-line !important;
+}
+
+.driver-popover-footer {
+  margin-top: 16px !important;
+  gap: 8px !important;
+}
+
+.driver-popover-next-btn,
+.driver-popover-done-btn {
+  background-color: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-size: 0.8125rem !important;
+  font-weight: 500 !important;
+  min-height: 36px !important;
+  cursor: pointer !important;
+}
+
+.driver-popover-prev-btn {
+  background-color: transparent !important;
+  color: var(--muted-foreground) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  padding: 8px 16px !important;
+  font-size: 0.8125rem !important;
+  min-height: 36px !important;
+  cursor: pointer !important;
+}
+
+.driver-popover-close-btn {
+  color: var(--muted-foreground) !important;
+  font-size: 1.25rem !important;
+  top: 12px !important;
+  right: 12px !important;
+}
+
+.driver-active-element {
+  border-radius: 8px !important;
+}

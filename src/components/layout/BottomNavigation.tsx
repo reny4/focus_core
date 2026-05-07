@@ -30,6 +30,7 @@ export function BottomNavigation({ activeTab, onTabChange }: Props) {
           <button
             key={id}
             type="button"
+            {...(id === 'stats' ? { 'data-tutorial': 'stats-tab' } : {})}
             className={cn(
               'flex-1 flex flex-col items-center justify-center gap-0.5 min-h-[44px] transition-colors',
               activeTab === id ? 'text-primary' : 'text-muted-foreground'

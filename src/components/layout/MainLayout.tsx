@@ -16,7 +16,7 @@ export function MainLayout({ header, left, right, rightStats, mobileContent }: P
 
       <div className="flex flex-1 overflow-hidden">
         {/* Left column — task panel (desktop only) */}
-        <aside className="hidden md:flex w-64 shrink-0 flex-col border-r overflow-y-auto">
+        <aside className="hidden md:flex w-64 shrink-0 flex-col border-r overflow-y-auto bg-white/[0.02] backdrop-blur-sm">
           {left}
         </aside>
 
@@ -26,7 +26,7 @@ export function MainLayout({ header, left, right, rightStats, mobileContent }: P
         </main>
 
         {/* Right column — stats (desktop only) */}
-        <aside data-tutorial="stats-panel" className="hidden md:flex w-80 shrink-0 flex-col overflow-y-auto">
+        <aside data-tutorial="stats-panel" className="hidden md:flex w-80 shrink-0 flex-col overflow-y-auto bg-white/[0.02] backdrop-blur-sm">
           {rightStats}
         </aside>
 

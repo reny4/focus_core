@@ -10,7 +10,9 @@ import type {
   TagBreakdownDto,
   SessionHistoryDto,
   SessionSummaryDto,
+  GetGrowthResponse,
 } from '@/application/analytics/dto/AnalyticsDtos'
+import { calcGrowthStats } from '@/application/analytics/queries/GetGrowthStats'
 import type { UUID } from '@/domain/shared/types/UUID'
 import { getDayRangeUtc } from '@/lib/time/timezone'
 import { addDays, format } from 'date-fns'
@@ -304,5 +306,17 @@ export class SupabaseAnalyticsQueryService implements IAnalyticsQueryService {
     return {
       sessions: (sessions ?? []).map(rowToSessionSummary),
     }
+  }
+
+  async getGrowthStats(userId: UUID): Promise<GetGrowthResponse> {
+    const { data: profile, error } = await this.supabase
+      .from('profiles')
+      .select('total_xp, prestige_count')
+      .eq('id', userId)
+      .single()
+
+    if (error) throw error
+
+    return calcGrowthStats(profile?.total_xp ?? 0, profile?.prestige_count ?? 0)
   }
 }

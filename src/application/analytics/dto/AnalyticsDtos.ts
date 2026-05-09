@@ -1,3 +1,13 @@
+export type GetGrowthResponse = {
+  totalXp: number
+  level: number
+  levelCap: number
+  xpInCurrentLevel: number
+  xpRequiredForNextLevel: number
+  progressRatio: number
+  prestige: number
+}
+
 export type SessionSummaryDto = {
   sessionId: string
   focusTaskName: string

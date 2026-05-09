@@ -131,6 +131,13 @@
   }
 }
 
+/* Phase 1: 深い藍色ベースの背景 — 集中・没入感を演出 */
+.dark body {
+  background:
+    radial-gradient(circle at 50% 30%, rgba(124, 124, 255, 0.08), transparent 40%),
+    linear-gradient(180deg, #0B0C14 0%, #07080D 100%);
+}
+
 /* Timer typography — Apple HIG Large Title equivalent */
 @layer components {
   .text-timer-lg {

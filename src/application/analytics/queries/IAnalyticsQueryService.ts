@@ -6,6 +6,7 @@ import type {
   YearHeatmapDto,
   TagBreakdownDto,
   SessionHistoryDto,
+  GetGrowthResponse,
 } from '../dto/AnalyticsDtos'
 import type { UUID } from '@/domain/shared/types/UUID'
 
@@ -17,4 +18,5 @@ export interface IAnalyticsQueryService {
   getYearHeatmap(userId: UUID, year: number, timezone: string): Promise<YearHeatmapDto>
   getTagBreakdown(userId: UUID, from: string, to: string, timezone: string): Promise<TagBreakdownDto>
   getSessionHistory(userId: UUID, from: string, to: string): Promise<SessionHistoryDto>
+  getGrowthStats(userId: UUID): Promise<GetGrowthResponse>
 }

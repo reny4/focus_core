@@ -772,3 +772,8 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
 8. **UseCase / API で Result 型を採用** → 例外を throw しない予測可能なエラーハンドリング
 9. **Analytics を Read Model として分離** → 集計ロジックがドメインを汚染しない
 10. **satisfies による ApiErrorCode の型安全** → エラーコード追加時のマッピング漏れをコンパイル時検出
+
+---
+
+## 22. Growth / Core Level
+詳細仕様は GROWTH.md を参照すること。

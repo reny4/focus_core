@@ -1,6 +1,7 @@
 import { UseCaseError } from '@/application/shared/errors/UseCaseError'
 import { DomainError } from '@/domain/shared/errors/DomainError'
 import type { IFocusSessionRepository } from '@/domain/focus/repositories/IFocusSessionRepository'
+import type { IProfileRepository } from '@/domain/profile/repositories/IProfileRepository'
 import { ok, err, type Result } from '@/domain/shared/types/Result'
 import type { UUID } from '@/domain/shared/types/UUID'
 
@@ -20,7 +21,7 @@ export type FinishSessionOutput = {
 
 export async function finishSession(
   input: FinishSessionInput,
-  deps: { focusSessionRepo: IFocusSessionRepository }
+  deps: { focusSessionRepo: IFocusSessionRepository; profileRepo: IProfileRepository }
 ): Promise<Result<FinishSessionOutput, UseCaseError>> {
   try {
     const active = await deps.focusSessionRepo.findActiveByUserId(input.userId)
@@ -30,6 +31,13 @@ export async function finishSession(
     const finished = active.finish(endedAt)
 
     await deps.focusSessionRepo.update(finished)
+
+    // XP加算（ベストエフォート: 失敗してもセッション finish は巻き戻さない）
+    try {
+      await deps.profileRepo.addXp(input.userId, finished.actualDuration.seconds)
+    } catch {
+      console.error('[FinishSession] XP加算に失敗しました（セッションは保存済み）')
+    }
 
     const overrunSeconds = Math.max(
       finished.actualDuration.seconds - finished.targetDuration.seconds,

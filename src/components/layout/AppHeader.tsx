@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/infrastructure/supabase/client'
+import { GrowthIndicator } from '@/components/growth/GrowthIndicator'
+import { useGrowth } from '@/hooks/useGrowth'
 
 type Props = {
   displayName?: string
@@ -12,6 +14,7 @@ type Props = {
 
 export function AppHeader({ displayName }: Props) {
   const router = useRouter()
+  const { growth } = useGrowth()
 
   async function handleSignOut() {
     const supabase = createClient()
@@ -25,6 +28,7 @@ export function AppHeader({ displayName }: Props) {
       <span className="text-base font-semibold tracking-tight">Focus Core</span>
 
       <div className="flex items-center gap-3">
+        <GrowthIndicator growth={growth} />
         {displayName && (
           <span className="hidden sm:block text-sm text-muted-foreground">
             {displayName}

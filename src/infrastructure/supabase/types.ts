@@ -162,21 +162,27 @@ export type Database = {
           created_at: string
           display_name: string | null
           id: string
+          prestige_count: number
           timezone: string
+          total_xp: number
           updated_at: string
         }
         Insert: {
           created_at?: string
           display_name?: string | null
           id: string
+          prestige_count?: number
           timezone?: string
+          total_xp?: number
           updated_at?: string
         }
         Update: {
           created_at?: string
           display_name?: string | null
           id?: string
+          prestige_count?: number
           timezone?: string
+          total_xp?: number
           updated_at?: string
         }
         Relationships: []

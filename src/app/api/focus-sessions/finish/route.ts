@@ -1,5 +1,6 @@
 import { createClient } from '@/infrastructure/supabase/server'
 import { SupabaseFocusSessionRepository } from '@/infrastructure/repositories/SupabaseFocusSessionRepository'
+import { SupabaseProfileRepository } from '@/infrastructure/repositories/SupabaseProfileRepository'
 import { finishSession } from '@/application/focus/usecases/FinishSession'
 import { successResponse, errorResponse, useCaseErrorResponse } from '@/presentation/api/routeHelper'
 import type { UUID } from '@/domain/shared/types/UUID'
@@ -12,7 +13,10 @@ export async function POST() {
 
   const result = await finishSession(
     { userId: user.id as UUID },
-    { focusSessionRepo: new SupabaseFocusSessionRepository(supabase) }
+    {
+      focusSessionRepo: new SupabaseFocusSessionRepository(supabase),
+      profileRepo: new SupabaseProfileRepository(supabase),
+    }
   )
 
   if (!result.ok) return useCaseErrorResponse(result.error)

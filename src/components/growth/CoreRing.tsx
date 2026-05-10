@@ -11,7 +11,7 @@ type CoreRingProps = {
   isLevelingUp?: boolean
 }
 
-const SIZE = 220
+const SIZE = 320
 const CX = SIZE / 2
 const CY = SIZE / 2
 
@@ -106,7 +106,7 @@ export function CoreRing({
     >
       {/* Background track */}
       <circle
-        cx={CX} cy={CY} r={88}
+        cx={CX} cy={CY} r={135}
         fill="none"
         stroke="rgba(255,255,255,0.06)"
         strokeWidth={tier === 'thin' ? 2 : 2.5}
@@ -115,7 +115,7 @@ export function CoreRing({
       {/* Main progress ring */}
       {phase !== 'idle' && (
         <RingCircle
-          r={88}
+          r={135}
           strokeWidth={tier === 'thin' ? 2 : 2.5}
           progress={progress}
           color={color}
@@ -126,7 +126,7 @@ export function CoreRing({
       {/* idle ring */}
       {phase === 'idle' && (
         <RingCircle
-          r={88}
+          r={135}
           strokeWidth={2}
           progress={1}
           color="rgba(255,255,255,0.15)"
@@ -137,7 +137,7 @@ export function CoreRing({
       {/* double tier: inner ring */}
       {(tier === 'double' || tier === 'orbital') && phase !== 'idle' && (
         <RingCircle
-          r={76}
+          r={115}
           strokeWidth={1}
           progress={progress}
           color={color}
@@ -148,7 +148,7 @@ export function CoreRing({
       {/* orbital tier: outer dashed orbit */}
       {tier === 'orbital' && (
         <circle
-          cx={CX} cy={CY} r={96}
+          cx={CX} cy={CY} r={151}
           fill="none"
           stroke="rgba(124,124,255,0.2)"
           strokeWidth={1}

@@ -33,7 +33,7 @@ type OverlayState = {
   toLevel: number
 }
 
-const CORE_RING_SIZE = 220
+const CORE_RING_SIZE = 320
 
 export function TimerPanel({ selectedTask }: Props) {
   const [targetDurationSeconds, setTargetDurationSeconds] = useState(

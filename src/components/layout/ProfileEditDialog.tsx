@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -21,18 +21,18 @@ type Props = {
 
 export function ProfileEditDialog({ open, currentDisplayName, onClose, onSuccess }: Props) {
   const [value, setValue] = useState(currentDisplayName)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
   function handleOpenChange(o: boolean) {
-    if (!o && !isLoading) {
+    if (!o && !isPending) {
       setError(null)
       setValue(currentDisplayName)
       onClose()
     }
   }
 
-  async function handleSave() {
+  function handleSave() {
     const trimmed = value.trim()
     if (!trimmed) {
       setError('名前を入力してください')
@@ -43,26 +43,25 @@ export function ProfileEditDialog({ open, currentDisplayName, onClose, onSuccess
       return
     }
 
-    setIsLoading(true)
     setError(null)
-    try {
-      const res = await fetch('/api/profile', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ displayName: trimmed }),
-      })
-      const data = await res.json()
-      if (!data.ok) {
-        setError(data.error?.message ?? '保存に失敗しました')
-        return
+    startTransition(async () => {
+      try {
+        const res = await fetch('/api/profile', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ displayName: trimmed }),
+        })
+        const data = await res.json()
+        if (!data.ok) {
+          setError(data.error?.message ?? '保存に失敗しました')
+          return
+        }
+        onSuccess(trimmed)
+        onClose()
+      } catch {
+        setError('通信エラーが発生しました')
       }
-      onSuccess(trimmed)
-      onClose()
-    } catch {
-      setError('通信エラーが発生しました')
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   return (
@@ -80,18 +79,18 @@ export function ProfileEditDialog({ open, currentDisplayName, onClose, onSuccess
             onChange={(e) => setValue(e.target.value)}
             maxLength={50}
             placeholder="表示名を入力"
-            disabled={isLoading}
+            disabled={isPending}
             onKeyDown={(e) => { if (e.key === 'Enter') handleSave() }}
           />
           {error && <p className="text-sm text-destructive">{error}</p>}
         </div>
 
         <DialogFooter>
-          <Button variant="outline" onClick={onClose} disabled={isLoading}>
+          <Button variant="outline" onClick={onClose} disabled={isPending}>
             キャンセル
           </Button>
-          <Button onClick={handleSave} disabled={isLoading || !value.trim()}>
-            {isLoading ? '保存中...' : '保存'}
+          <Button onClick={handleSave} disabled={isPending || !value.trim()}>
+            {isPending ? '保存中...' : '保存'}
           </Button>
         </DialogFooter>
       </DialogContent>

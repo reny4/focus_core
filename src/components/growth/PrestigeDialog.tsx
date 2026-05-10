@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { RotateCcw } from 'lucide-react'
 import {
   AlertDialog,
@@ -20,30 +20,29 @@ type Props = {
 }
 
 export function PrestigeDialog({ open, onClose, onSuccess }: Props) {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  async function handlePrestige() {
-    setIsLoading(true)
+  function handlePrestige() {
     setError(null)
-    try {
-      const res = await fetch('/api/growth/prestige', { method: 'POST' })
-      const data = await res.json()
-      if (!data.ok) {
-        setError(data.error?.message ?? 'Prestigeに失敗しました')
-        return
+    startTransition(async () => {
+      try {
+        const res = await fetch('/api/growth/prestige', { method: 'POST' })
+        const data = await res.json()
+        if (!data.ok) {
+          setError(data.error?.message ?? 'Prestigeに失敗しました')
+          return
+        }
+        onSuccess()
+        onClose()
+      } catch {
+        setError('通信エラーが発生しました')
       }
-      onSuccess()
-      onClose()
-    } catch {
-      setError('通信エラーが発生しました')
-    } finally {
-      setIsLoading(false)
-    }
+    })
   }
 
   function handleClose() {
-    if (isLoading) return
+    if (isPending) return
     setError(null)
     onClose()
   }
@@ -68,15 +67,15 @@ export function PrestigeDialog({ open, onClose, onSuccess }: Props) {
         )}
 
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={handleClose} disabled={isLoading}>
+          <AlertDialogCancel onClick={handleClose} disabled={isPending}>
             キャンセル
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handlePrestige}
-            disabled={isLoading}
+            disabled={isPending}
             className="bg-[#6366F1] hover:bg-[#5254CC] text-white"
           >
-            {isLoading ? '実行中...' : 'Prestige する'}
+            {isPending ? '実行中...' : 'Prestige する'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

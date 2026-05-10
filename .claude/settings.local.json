@@ -30,7 +30,12 @@
       "Bash(npm list *)",
       "Bash(npx shadcn@latest add tooltip --yes)",
       "Bash(npm run *)",
-      "Bash(git checkout *)"
+      "Bash(git checkout *)",
+      "Bash(git merge chore/code-cleanup --no-ff -m ' *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git stash *)",
+      "Bash(git push *)"
     ]
   }
 }

@@ -9,23 +9,35 @@ export function getDayRangeUtc(
   dateString: string, // YYYY-MM-DD
   timezone: string
 ): { from: Date; to: Date } {
-  const from = new Date(`${dateString}T00:00:00`)
-  const to   = new Date(`${dateString}T00:00:00`)
-  to.setDate(to.getDate() + 1)
-
-  const toUtc = (localDate: Date) => {
-    const formatter = new Intl.DateTimeFormat('en-CA', {
-      timeZone: timezone,
-      year: 'numeric', month: '2-digit', day: '2-digit',
-      hour: '2-digit', minute: '2-digit', second: '2-digit',
-      hour12: false,
-    })
-    const utcMs = localDate.getTime()
-    const tzOffsetMs = utcMs - new Date(
-      formatter.format(localDate).replace(/(\d+)\/(\d+)\/(\d+),\s/, '$3-$1-$2T') + 'Z'
-    ).getTime()
-    return new Date(utcMs - tzOffsetMs)
+  return {
+    from: midnightUtc(dateString, timezone),
+    to: midnightUtc(shiftDay(dateString, 1), timezone),
   }
+}
 
-  return { from: toUtc(from), to: toUtc(to) }
+/**
+ * dateString (YYYY-MM-DD) の timezone における 00:00:00 を UTC Date として返す。
+ * サーバーのローカルタイムゾーンに依存しない実装。
+ */
+function midnightUtc(dateString: string, timezone: string): Date {
+  const [y, mo, d] = dateString.split('-').map(Number)
+  // 正午 UTC を基点にする（DST 切替日でも必ず目的の日付の中に収まる）
+  const probeMs = Date.UTC(y, mo - 1, d, 12, 0, 0)
+  // sv-SE ロケールは "YYYY-MM-DD HH:MM:SS" 形式を返すため扱いやすい
+  const localStr = new Date(probeMs).toLocaleString('sv-SE', { timeZone: timezone })
+  // ローカル時刻文字列を UTC として解釈し、実際の UTC との差分 (offsetMs) を求める
+  const localAsUtcMs = new Date(localStr.replace(' ', 'T') + 'Z').getTime()
+  const offsetMs = localAsUtcMs - probeMs
+  // timezone の真夜中 = YYYY-MM-DDT00:00:00 (fake UTC) − offset
+  return new Date(Date.UTC(y, mo - 1, d) - offsetMs)
+}
+
+function shiftDay(dateString: string, days: number): string {
+  const [y, mo, d] = dateString.split('-').map(Number)
+  const shifted = new Date(Date.UTC(y, mo - 1, d + days))
+  return [
+    shifted.getUTCFullYear(),
+    String(shifted.getUTCMonth() + 1).padStart(2, '0'),
+    String(shifted.getUTCDate()).padStart(2, '0'),
+  ].join('-')
 }

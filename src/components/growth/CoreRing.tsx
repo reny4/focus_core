@@ -9,6 +9,7 @@ type CoreRingProps = {
   level: number
   isFinishing?: boolean
   isLevelingUp?: boolean
+  isPrestiging?: boolean
 }
 
 const SIZE = 320
@@ -66,6 +67,7 @@ export function CoreRing({
   level,
   isFinishing = false,
   isLevelingUp = false,
+  isPrestiging = false,
 }: CoreRingProps) {
   const tier = ringTier(level)
 
@@ -84,13 +86,16 @@ export function CoreRing({
     ? Math.floor(overrunSec / targetDurationSeconds) + 1
     : 1
 
-  const animateTarget = isLevelingUp
+  const animateTarget = isPrestiging
+    ? { scale: [1, 1.04, 1] as number[], filter: ['drop-shadow(0 0 0px rgba(167,139,250,0))', 'drop-shadow(0 0 12px rgba(167,139,250,0.6))', 'drop-shadow(0 0 0px rgba(167,139,250,0))'] as string[] }
+    : isLevelingUp
     ? { scale: [1, 1.03, 1] as number[], filter: ['drop-shadow(0 0 0px rgba(124,124,255,0))', 'drop-shadow(0 0 8px rgba(124,124,255,0.5))', 'drop-shadow(0 0 0px rgba(124,124,255,0))'] as string[] }
     : phase === 'counting_up'
     ? { scale: [1, 1.015, 1] as number[] }
     : { scale: 1 }
 
-  const animateTransition = isLevelingUp
+  const isPulsing = isPrestiging || isLevelingUp
+  const animateTransition = isPulsing
     ? { duration: 0.8, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] }
     : phase === 'counting_up'
     ? { duration: 2, repeat: Infinity, ease: 'easeInOut' as const }

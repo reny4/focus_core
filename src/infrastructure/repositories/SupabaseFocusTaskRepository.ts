@@ -37,15 +37,45 @@ export class SupabaseFocusTaskRepository implements IFocusTaskRepository {
   }
 
   async findActiveByUserId(userId: UUID): Promise<FocusTask[]> {
-    const { data, error } = await this.supabase
-      .from('focus_tasks')
-      .select('*')
-      .eq('user_id', userId)
-      .is('archived_at', null)
-      .order('created_at', { ascending: true })
+    const [tasksResult, sessionsResult] = await Promise.all([
+      this.supabase
+        .from('focus_tasks')
+        .select('*')
+        .eq('user_id', userId)
+        .is('archived_at', null),
+      this.supabase
+        .from('focus_sessions')
+        .select('focus_task_id, started_at')
+        .eq('user_id', userId)
+        .eq('status', 'finished')
+        .order('started_at', { ascending: false }),
+    ])
 
-    if (error) throw new UseCaseError('PERSISTENCE_FAILED', error.message)
-    return (data ?? []).map(rowToEntity)
+    if (tasksResult.error) throw new UseCaseError('PERSISTENCE_FAILED', tasksResult.error.message)
+    if (sessionsResult.error) throw new UseCaseError('PERSISTENCE_FAILED', sessionsResult.error.message)
+
+    // Build a map of focusTaskId → latest session started_at
+    const lastUsedMap = new Map<string, string>()
+    for (const s of sessionsResult.data ?? []) {
+      if (!lastUsedMap.has(s.focus_task_id)) {
+        lastUsedMap.set(s.focus_task_id, s.started_at)
+      }
+    }
+
+    return (tasksResult.data ?? [])
+      .map(rowToEntity)
+      .sort((a, b) => {
+        const aLast = lastUsedMap.get(a.id)
+        const bLast = lastUsedMap.get(b.id)
+        // Both have sessions: sort by latest session DESC
+        if (aLast && bLast) return new Date(bLast).getTime() - new Date(aLast).getTime()
+        // Only a has session: a goes first
+        if (aLast) return -1
+        // Only b has session: b goes first
+        if (bLast) return 1
+        // Neither has session: sort by created_at DESC
+        return b.createdAt.getTime() - a.createdAt.getTime()
+      })
   }
 
   async findActiveByUserIdAndTagId(userId: UUID, tagId: UUID): Promise<FocusTask[]> {

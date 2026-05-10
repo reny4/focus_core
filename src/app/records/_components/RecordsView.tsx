@@ -16,6 +16,10 @@ import { MonthlyStats } from '@/components/analytics/MonthlyStats'
 import { YearlyStats } from '@/components/analytics/YearlyStats'
 import { YearHeatmap } from '@/components/analytics/YearHeatmap'
 import { TagBreakdown } from '@/components/analytics/TagBreakdown'
+import { GrowthLevelCard, GrowthLevelCardSkeleton } from '@/components/growth/GrowthLevelCard'
+import { TaskGrowthList, TaskGrowthListSkeleton } from '@/components/analytics/TaskGrowthList'
+import { useGrowth } from '@/hooks/useGrowth'
+import { useTaskGrowth } from '@/hooks/useTaskGrowth'
 import { ROUTES } from '@/lib/constants/routes'
 
 function getMonday(date: Date): Date {
@@ -37,6 +41,8 @@ export function RecordsView({ displayName }: Props) {
   const [monthDate, setMonthDate] = useState(today)
   const [year, setYear] = useState(today.getFullYear())
   const [yearSubTab, setYearSubTab] = useState<YearSubTab>('monthly')
+  const { growth, isLoading: growthLoading } = useGrowth()
+  const { taskGrowth, isLoading: taskGrowthLoading } = useTaskGrowth()
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -195,6 +201,31 @@ export function RecordsView({ displayName }: Props) {
               )}
             </TabsContent>
           </Tabs>
+
+          {/* Growth Level Card — Tabs外に置くことでタブ切替時に再マウントされない */}
+          <div className="mt-4 flex flex-col gap-3">
+            {growthLoading ? (
+              <GrowthLevelCardSkeleton />
+            ) : growth ? (
+              <GrowthLevelCard
+                level={growth.level}
+                levelCap={growth.levelCap}
+                prestige={growth.prestige}
+                totalLevel={growth.totalLevel}
+                progressRatio={growth.progressRatio}
+                xpInCurrentLevel={growth.xpInCurrentLevel}
+                xpRequiredForNextLevel={growth.xpRequiredForNextLevel}
+                canPrestige={growth.canPrestige}
+              />
+            ) : null}
+
+            {/* Task Growth — 記録画面限定 */}
+            {taskGrowthLoading ? (
+              <TaskGrowthListSkeleton />
+            ) : taskGrowth ? (
+              <TaskGrowthList tasks={taskGrowth.tasks} />
+            ) : null}
+          </div>
         </div>
       </main>
     </div>

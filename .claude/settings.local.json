@@ -29,7 +29,8 @@
       "Read(//tmp/**)",
       "Bash(npm list *)",
       "Bash(npx shadcn@latest add tooltip --yes)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(git checkout *)"
     ]
   }
 }

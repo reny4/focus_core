@@ -16,6 +16,8 @@ import { YearlyStats } from './YearlyStats'
 import { YearHeatmap } from './YearHeatmap'
 import { ROUTES } from '@/lib/constants/routes'
 import { TagBreakdown } from './TagBreakdown'
+import { GrowthLevelCard, GrowthLevelCardSkeleton } from '@/components/growth/GrowthLevelCard'
+import { useGrowth } from '@/hooks/useGrowth'
 
 function getMonday(date: Date): Date {
   const d = new Date(date)
@@ -34,6 +36,7 @@ export function StatsPanel() {
   const [monthDate, setMonthDate] = useState(today)
   const [year, setYear] = useState(today.getFullYear())
   const [yearSubTab, setYearSubTab] = useState<YearSubTab>('monthly')
+  const { growth, isLoading: growthLoading } = useGrowth()
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -188,6 +191,24 @@ export function StatsPanel() {
           )}
         </TabsContent>
       </Tabs>
+
+      {/* Growth Level Card — Tabs外に置くことでタブ切替時に再マウントされない */}
+      <div className="mt-2">
+        {growthLoading ? (
+          <GrowthLevelCardSkeleton />
+        ) : growth ? (
+          <GrowthLevelCard
+            level={growth.level}
+            levelCap={growth.levelCap}
+            prestige={growth.prestige}
+            totalLevel={growth.totalLevel}
+            progressRatio={growth.progressRatio}
+            xpInCurrentLevel={growth.xpInCurrentLevel}
+            xpRequiredForNextLevel={growth.xpRequiredForNextLevel}
+            canPrestige={growth.canPrestige}
+          />
+        ) : null}
+      </div>
     </div>
   )
 }

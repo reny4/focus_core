@@ -1,7 +1,7 @@
 'use client'
 
 // HIG: Deference — このパネルが画面の主役。道具として静かに機能する
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
 import { TimerDisplay } from './TimerDisplay'
 import { TargetDurationInput } from './TargetDurationInput'
@@ -43,6 +43,8 @@ export function TimerPanel({ selectedTask }: Props) {
     visible: false, gainedXp: 0, fromLevel: 1, toLevel: 1,
   })
   const [isLevelingUp, setIsLevelingUp] = useState(false)
+  const [isPrestiging, setIsPrestiging] = useState(false)
+  const prevPrestigeRef = useRef<number | undefined>(undefined)
 
   const { data: sessionData, isLoading } = useActiveSession()
   const startSession = useStartSession()
@@ -67,6 +69,18 @@ export function TimerPanel({ selectedTask }: Props) {
 
   const level = growth?.level ?? 1
   const targetSec = activeSession?.targetDurationSeconds ?? targetDurationSeconds
+
+  useEffect(() => {
+    const currentPrestige = growth?.prestige
+    if (currentPrestige === undefined) return
+    if (prevPrestigeRef.current !== undefined && currentPrestige > prevPrestigeRef.current) {
+      setIsPrestiging(true)
+      const t = setTimeout(() => setIsPrestiging(false), 800)
+      prevPrestigeRef.current = currentPrestige
+      return () => clearTimeout(t)
+    }
+    prevPrestigeRef.current = currentPrestige
+  }, [growth?.prestige])
 
   async function handleStart() {
     if (!selectedTask) return
@@ -154,6 +168,7 @@ export function TimerPanel({ selectedTask }: Props) {
               targetDurationSeconds={targetSec}
               level={level}
               isLevelingUp={isLevelingUp}
+              isPrestiging={isPrestiging}
             />
           </div>
 

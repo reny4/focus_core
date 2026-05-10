@@ -6,6 +6,8 @@ export type GetGrowthResponse = {
   xpRequiredForNextLevel: number
   progressRatio: number
   prestige: number
+  canPrestige: boolean
+  totalLevel: number
 }
 
 export type SessionSummaryDto = {
@@ -68,4 +70,20 @@ export type TagBreakdownDto = {
 
 export type SessionHistoryDto = {
   sessions: SessionSummaryDto[]
+}
+
+export type TaskGrowthItemDto = {
+  focusTaskId: string
+  focusTaskName: string
+  tagName: string
+  tagColor: string
+  totalSeconds: number
+  totalXp: number
+  level: number
+  progressRatio: number
+  sessionCount: number
+}
+
+export type GetTaskGrowthResponse = {
+  tasks: TaskGrowthItemDto[]
 }

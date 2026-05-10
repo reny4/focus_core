@@ -7,6 +7,7 @@ import type {
   TagBreakdownDto,
   SessionHistoryDto,
   GetGrowthResponse,
+  GetTaskGrowthResponse,
 } from '../dto/AnalyticsDtos'
 import type { UUID } from '@/domain/shared/types/UUID'
 
@@ -19,4 +20,5 @@ export interface IAnalyticsQueryService {
   getTagBreakdown(userId: UUID, from: string, to: string, timezone: string): Promise<TagBreakdownDto>
   getSessionHistory(userId: UUID, from: string, to: string): Promise<SessionHistoryDto>
   getGrowthStats(userId: UUID): Promise<GetGrowthResponse>
+  getTaskGrowthStats(userId: UUID): Promise<GetTaskGrowthResponse>
 }

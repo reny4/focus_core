@@ -1,14 +1,16 @@
 import type { GetGrowthResponse } from '../dto/AnalyticsDtos'
 
-const XP_PER_LEVEL = 7200
-const LEVEL_CAP = 100
+export const XP_PER_LEVEL = 7200
+export const LEVEL_CAP = 100
+const XP_PER_PRESTIGE = 720000
 
 export function calcGrowthStats(totalXp: number, prestigeCount: number): GetGrowthResponse {
-  const rawLevel = Math.floor(totalXp / XP_PER_LEVEL) + 1
+  const xpInCurrentPrestige = totalXp - prestigeCount * XP_PER_PRESTIGE
+  const rawLevel = Math.floor(xpInCurrentPrestige / XP_PER_LEVEL) + 1
   const level = Math.min(LEVEL_CAP, rawLevel)
   const isMaxLevel = level === LEVEL_CAP
 
-  const xpInCurrentLevel = isMaxLevel ? XP_PER_LEVEL : totalXp % XP_PER_LEVEL
+  const xpInCurrentLevel = isMaxLevel ? XP_PER_LEVEL : xpInCurrentPrestige % XP_PER_LEVEL
   const progressRatio = isMaxLevel ? 1 : xpInCurrentLevel / XP_PER_LEVEL
 
   return {
@@ -19,5 +21,7 @@ export function calcGrowthStats(totalXp: number, prestigeCount: number): GetGrow
     xpRequiredForNextLevel: XP_PER_LEVEL,
     progressRatio,
     prestige: prestigeCount,
+    canPrestige: isMaxLevel,
+    totalLevel: prestigeCount * LEVEL_CAP + level,
   }
 }

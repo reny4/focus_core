@@ -11,8 +11,10 @@ import type {
   SessionHistoryDto,
   SessionSummaryDto,
   GetGrowthResponse,
+  GetTaskGrowthResponse,
 } from '@/application/analytics/dto/AnalyticsDtos'
 import { calcGrowthStats } from '@/application/analytics/queries/GetGrowthStats'
+import { calcTaskLevel } from '@/application/analytics/queries/GetTaskGrowthStats'
 import type { UUID } from '@/domain/shared/types/UUID'
 import { getDayRangeUtc } from '@/lib/time/timezone'
 import { addDays, format } from 'date-fns'
@@ -318,5 +320,58 @@ export class SupabaseAnalyticsQueryService implements IAnalyticsQueryService {
     if (error) throw error
 
     return calcGrowthStats(profile?.total_xp ?? 0, profile?.prestige_count ?? 0)
+  }
+
+  async getTaskGrowthStats(userId: UUID): Promise<GetTaskGrowthResponse> {
+    const { data: sessions, error } = await this.supabase
+      .from('focus_sessions')
+      .select('focus_task_id, focus_task_name_snapshot, tag_name_snapshot, tag_color_snapshot, actual_duration_seconds, started_at')
+      .eq('user_id', userId)
+      .eq('status', 'finished')
+      .not('actual_duration_seconds', 'is', null)
+      .order('started_at', { ascending: false })
+
+    if (error) throw error
+
+    // Group by focusTaskId, track latest session snapshot
+    const taskMap = new Map<string, {
+      focusTaskName: string
+      tagName: string
+      tagColor: string
+      totalSeconds: number
+      sessionCount: number
+    }>()
+
+    for (const s of sessions ?? []) {
+      const taskId = s.focus_task_id
+      const existing = taskMap.get(taskId)
+      if (!existing) {
+        // First occurrence = latest session (due to DESC ordering)
+        taskMap.set(taskId, {
+          focusTaskName: s.focus_task_name_snapshot,
+          tagName: s.tag_name_snapshot,
+          tagColor: s.tag_color_snapshot,
+          totalSeconds: s.actual_duration_seconds ?? 0,
+          sessionCount: 1,
+        })
+      } else {
+        existing.totalSeconds += s.actual_duration_seconds ?? 0
+        existing.sessionCount += 1
+      }
+    }
+
+    const tasks = Array.from(taskMap.entries())
+      .map(([focusTaskId, data]) => ({
+        focusTaskId,
+        focusTaskName: data.focusTaskName,
+        tagName: data.tagName,
+        tagColor: data.tagColor,
+        totalSeconds: data.totalSeconds,
+        sessionCount: data.sessionCount,
+        ...calcTaskLevel(data.totalSeconds),
+      }))
+      .sort((a, b) => b.totalSeconds - a.totalSeconds)
+
+    return { tasks }
   }
 }

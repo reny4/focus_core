@@ -88,6 +88,9 @@ export function TimerPanel({ selectedTask }: Props) {
       await startSession.mutateAsync({
         focusTaskId: selectedTask.id,
         targetDurationSeconds,
+        focusTaskName: selectedTask.name,
+        tagName: selectedTask.tagName,
+        tagColor: selectedTask.tagColor,
       })
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'セッションを開始できませんでした')

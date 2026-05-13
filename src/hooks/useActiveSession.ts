@@ -34,24 +34,59 @@ export function useActiveSession() {
   })
 }
 
+type StartSessionInput = {
+  focusTaskId: string
+  targetDurationSeconds: number
+  focusTaskName: string
+  tagName: string
+  tagColor: string
+}
+
 export function useStartSession() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: async (input: {
-      focusTaskId: string
-      targetDurationSeconds: number
-    }) => {
+    mutationFn: async (input: StartSessionInput) => {
       const res = await fetch('/api/focus-sessions/start', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(input),
+        body: JSON.stringify({
+          focusTaskId: input.focusTaskId,
+          targetDurationSeconds: input.targetDurationSeconds,
+        }),
       })
       const data = await res.json()
       if (!data.ok) throw new Error(data.error.message)
       return data.value
     },
+    onMutate: async (input) => {
+      await queryClient.cancelQueries({ queryKey: ACTIVE_SESSION_KEY })
+      const previous = queryClient.getQueryData(ACTIVE_SESSION_KEY)
+      queryClient.setQueryData(ACTIVE_SESSION_KEY, {
+        exists: true,
+        session: {
+          sessionId: 'optimistic',
+          focusTaskId: input.focusTaskId,
+          focusTaskName: input.focusTaskName,
+          tagId: '',
+          tagName: input.tagName,
+          tagColor: input.tagColor,
+          targetDurationSeconds: input.targetDurationSeconds,
+          startedAt: new Date().toISOString(),
+          serverNow: new Date().toISOString(),
+          elapsedSeconds: 0,
+          phase: 'counting_down' as const,
+          remainingSeconds: input.targetDurationSeconds,
+          overrunSeconds: 0,
+          requiresReview: false,
+        },
+      })
+      return { previous }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ACTIVE_SESSION_KEY })
+    },
+    onError: (_err, _input, context) => {
+      queryClient.setQueryData(ACTIVE_SESSION_KEY, context?.previous)
     },
   })
 }

@@ -6,6 +6,11 @@ import { Toaster } from "@/components/ui/sonner";
 export const metadata: Metadata = {
   title: "Focus Core",
   description: "集中そのものを記録・可視化する集中支援アプリ",
+  themeColor: "#6366F1",
+  icons: {
+    icon: "/icon.svg",
+    apple: "/apple-icon.svg",
+  },
 };
 
 export default function RootLayout({

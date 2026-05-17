@@ -1,0 +1,45 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 32 32"
+  width="180"
+  height="180"
+>
+  <!-- 背景：アクセントカラーの角丸正方形 -->
+  <rect width="32" height="32" rx="7" fill="#6366F1" />
+
+  <!-- 砂時計の外枠（上下の横棒） -->
+  <line x1="9" y1="8"  x2="23" y2="8"  stroke="white" stroke-width="1.8" stroke-linecap="round" />
+  <line x1="9" y1="24" x2="23" y2="24" stroke="white" stroke-width="1.8" stroke-linecap="round" />
+
+  <!-- 砂時計の輪郭（くびれた形） -->
+  <path
+    d="M9.5 8.5 L16 15.5 L22.5 8.5"
+    fill="none"
+    stroke="white"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M9.5 23.5 L16 16.5 L22.5 23.5"
+    fill="none"
+    stroke="white"
+    stroke-width="1.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+
+  <!-- 上部の砂（まだ残っている） -->
+  <path
+    d="M11 10 L16 15 L21 10 Z"
+    fill="white"
+    opacity="0.9"
+  />
+
+  <!-- 下部の砂（落ちた砂・小さめ） -->
+  <path
+    d="M13.5 22 L16 19.5 L18.5 22 Z"
+    fill="white"
+    opacity="0.6"
+  />
+</svg>
